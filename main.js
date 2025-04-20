@@ -753,6 +753,7 @@ async function main() {
     const req = await fetch(url, {
         mode: "cors", // no-cors, *cors, same-origin
         credentials: "omit", // include, *same-origin, omit
+        redirect: "follow", // Ensure redirects are followed (GitHub LFS uses redirects)
     });
     console.log(req);
     if (req.status != 200)
