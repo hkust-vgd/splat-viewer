@@ -753,7 +753,7 @@ async function main() {
         params.get("url") || "pier.splat",
         "https://splat-viewer.hkustvgd.com/",
     );
-    const req = await fetch(CORS_PROXY + url, {
+    const req = await fetch(url, {
         mode: "cors", // no-cors, *cors, same-origin
         credentials: "omit", // include, *same-origin, omit
     });
