@@ -736,6 +736,9 @@ let defaultViewMatrix = [
     0.03, 6.55, 1,
 ];
 let viewMatrix = defaultViewMatrix;
+
+const GITHUB_RAW_URL = "https://github.com/hkust-vgd/splat-viewer/raw/main/pier.splat";
+const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
 async function main() {
     let carousel = true;
     const params = new URLSearchParams(location.search);
@@ -747,13 +750,16 @@ async function main() {
     const url = new URL(
         // "nike.splat",
         // location.href,
-        "https://github.com/hkust-vgd/splat-viewer/raw/refs/heads/master/pier.splat",
-        // "https://splat-viewer.hkustvgd.com/",
+        params.get("url") || GITHUB_RAW_URL,
+        "https://splat-viewer.hkustvgd.com/",
     );
-    const req = await fetch(url, {
+    const req = await fetch(CORS_PROXY + url, {
         mode: "cors", // no-cors, *cors, same-origin
         credentials: "omit", // include, *same-origin, omit
-        redirect: "follow", // Ensure redirects are followed (GitHub LFS uses redirects)
+        headers: {
+            // Some proxies require an Origin header
+            "Origin": "https://splat-viewer.hkustvgd.com",
+        },
     });
     console.log(req);
     if (req.status != 200)
