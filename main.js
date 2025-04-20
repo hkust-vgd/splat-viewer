@@ -750,7 +750,7 @@ async function main() {
     const url = new URL(
         // "nike.splat",
         // location.href,
-        params.get("url") || "pier.splat",
+        params.get("url") || "pier_new.splat",
         "https://splat-viewer.hkustvgd.com/",
     );
     const req = await fetch(url, {
