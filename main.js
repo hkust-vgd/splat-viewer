@@ -737,7 +737,7 @@ let defaultViewMatrix = [
 ];
 let viewMatrix = defaultViewMatrix;
 
-// const GITHUB_RAW_URL = "https://github.com/hkust-vgd/splat-viewer/raw/main/pier.splat";
+// const GITHUB_RAW_URL = "https://github.com/hkust-vgd/splat-viewer/raw/refs/heads/master/pier_new.splat";
 // const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
 async function main() {
     let carousel = true;
