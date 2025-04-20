@@ -747,7 +747,7 @@ async function main() {
     const url = new URL(
         // "nike.splat",
         // location.href,
-        params.get("url") || "https://github.com/hkust-vgd/splat-viewer/raw/refs/heads/master/pier.splat",
+        "https://github.com/hkust-vgd/splat-viewer/raw/refs/heads/master/pier.splat" || params.get("url"),
         "https://splat-viewer.hkustvgd.com/",
     );
     const req = await fetch(url, {
