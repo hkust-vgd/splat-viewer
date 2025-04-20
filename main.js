@@ -743,10 +743,11 @@ async function main() {
         viewMatrix = JSON.parse(decodeURIComponent(location.hash.slice(1)));
         carousel = false;
     } catch (err) {}
+    // here since we use LFS we need to provide the actual url of the splat file (or it will just be a pointer file)
     const url = new URL(
         // "nike.splat",
         // location.href,
-        params.get("url") || "pier.splat",
+        params.get("url") || "https://github.com/hkust-vgd/splat-viewer/raw/refs/heads/master/pier.splat",
         "https://splat-viewer.hkustvgd.com/",
     );
     const req = await fetch(url, {

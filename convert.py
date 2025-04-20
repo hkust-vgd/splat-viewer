@@ -5,6 +5,7 @@ from plyfile import PlyData
 import numpy as np
 import argparse
 from io import BytesIO
+from tqdm import tqdm
 
 
 def process_ply_to_splat(ply_file_path):
@@ -15,7 +16,7 @@ def process_ply_to_splat(ply_file_path):
         / (1 + np.exp(-vert["opacity"]))
     )
     buffer = BytesIO()
-    for idx in sorted_indices:
+    for idx in tqdm(sorted_indices):
         v = plydata["vertex"][idx]
         position = np.array([v["x"], v["y"], v["z"]], dtype=np.float32)
         scales = np.exp(
