@@ -747,7 +747,7 @@ async function main() {
         // "nike.splat",
         // location.href,
         params.get("url") || "pier_part.splat",
-        "http://statics.hkustvgd.com/",
+        "https://statics.hkustvgd.com/",
     );
     const req = await fetch(url, {
         mode: "cors", // no-cors, *cors, same-origin
