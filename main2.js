@@ -1,16 +1,14 @@
 let cameras = [
     {
         id: 0,
-        img_name: "00001",
+        img_name: "00057",
         width: 1959,
         height: 1090,
-        position: [
-            -3.0089893469241797, -0.11086489695181866, -3.7527640949141428,
-        ],
+        position: [4.742994605467533, -0.05591660945412069, 0.9500365976084458],
         rotation: [
-            [0.876134201218856, 0.06925962026449776, 0.47706599800804744],
-            [-0.04747421839895102, 0.9972110940209488, -0.057586739349882114],
-            [-0.4797239414934443, 0.027805376500959853, 0.8769787916452908],
+            [0.01207080756938, 0.17042655709210375, -0.9852964448542146],
+            [0.9931575292530063, -0.1165090336695526, -0.00798543433078162],
+            [-0.1161568667478904, -0.9784581921120181, -0.1706667764862097]
         ],
         fy: 1164.6601287484507,
         fx: 1159.5880733038064,
@@ -113,14 +111,16 @@ let cameras = [
     },
     {
         id: 7,
-        img_name: "00057",
+        img_name: "00001",
         width: 1959,
         height: 1090,
-        position: [4.742994605467533, -0.05591660945412069, 0.9500365976084458],
+        position: [
+            -3.0089893469241797, -0.11086489695181866, -3.7527640949141428,
+        ],
         rotation: [
-            [-0.17042655709210375, 0.01207080756938, -0.9852964448542146],
-            [0.1165090336695526, 0.9931575292530063, -0.00798543433078162],
-            [0.9784581921120181, -0.1161568667478904, -0.1706667764862097],
+            [0.876134201218856, 0.06925962026449776, 0.47706599800804744],
+            [-0.04747421839895102, 0.9972110940209488, -0.057586739349882114],
+            [-0.4797239414934443, 0.027805376500959853, 0.8769787916452908],
         ],
         fy: 1164.6601287484507,
         fx: 1159.5880733038064,
@@ -440,8 +440,8 @@ function createWorker(self) {
         for (let i = 0; i < vertexCount; i++) {
             let depth =
                 ((viewProj[2] * f_buffer[8 * i + 0] +
-                    viewProj[6] * f_buffer[8 * i + 1] +
-                    viewProj[10] * f_buffer[8 * i + 2]) *
+                        viewProj[6] * f_buffer[8 * i + 1] +
+                        viewProj[10] * f_buffer[8 * i + 2]) *
                     4096) |
                 0;
             sizeList[i] = depth;
@@ -450,7 +450,7 @@ function createWorker(self) {
         }
 
         // This is a 16 bit single-pass counting sort
-        let depthInv = (256 * 256 - 1) / (maxDepth - minDepth);
+        let depthInv = (256 * 256) / (maxDepth - minDepth);
         let counts0 = new Uint32Array(256 * 256);
         for (let i = 0; i < vertexCount; i++) {
             sizeList[i] = ((sizeList[i] - minDepth) * depthInv) | 0;
@@ -570,9 +570,9 @@ function createWorker(self) {
             if (types["scale_0"]) {
                 const qlen = Math.sqrt(
                     attrs.rot_0 ** 2 +
-                        attrs.rot_1 ** 2 +
-                        attrs.rot_2 ** 2 +
-                        attrs.rot_3 ** 2,
+                    attrs.rot_1 ** 2 +
+                    attrs.rot_2 ** 2 +
+                    attrs.rot_3 ** 2,
                 );
 
                 rot[0] = (attrs.rot_0 / qlen) * 128 + 128;
@@ -639,7 +639,7 @@ function createWorker(self) {
             runSort(viewProj);
             buffer = processPlyBuffer(e.data.ply);
             vertexCount = Math.floor(buffer.byteLength / rowLength);
-            postMessage({ buffer: buffer, save: !!e.data.save });
+            postMessage({ buffer: buffer });
         } else if (e.data.buffer) {
             buffer = e.data.buffer;
             vertexCount = e.data.vertexCount;
@@ -684,8 +684,8 @@ void main () {
     mat3 Vrk = mat3(u1.x, u1.y, u2.x, u1.y, u2.y, u3.x, u2.x, u3.x, u3.y);
 
     mat3 J = mat3(
-        focal.x / cam.z, 0., -(focal.x * cam.x) / (cam.z * cam.z),
-        0., -focal.y / cam.z, (focal.y * cam.y) / (cam.z * cam.z),
+        focal.x / cam.z, 0., -(focal.x * cam.x) / (cam.z * cam.z), 
+        0., -focal.y / cam.z, (focal.y * cam.y) / (cam.z * cam.z), 
         0., 0., 0.
     );
 
@@ -706,8 +706,8 @@ void main () {
 
     vec2 vCenter = vec2(pos2d) / pos2d.w;
     gl_Position = vec4(
-        vCenter
-        + position.x * majorAxis / viewport
+        vCenter 
+        + position.x * majorAxis / viewport 
         + position.y * minorAxis / viewport, 0.0, 1.0);
 
 }
@@ -735,22 +735,33 @@ let defaultViewMatrix = [
     0.47, 0.04, 0.88, 0, -0.11, 0.99, 0.02, 0, -0.88, -0.11, 0.47, 0, 0.07,
     0.03, 6.55, 1,
 ];
+// let defaultViewMatrix = [
+//     0.01207080756938,      0.17042655709210375,   -0.9852964448542146,   4.742994605467533,
+//     0.9931575292530063,    -0.1165090336695526,    -0.00798543433078162, -0.05591660945412069,
+//     -0.1161568667478904,    -0.9784581921120181,    -0.1706667764862097,  0.9500365976084458,
+//     0.0,                    0.0,                    0.0,                   1.0
+// ]
 let viewMatrix = defaultViewMatrix;
+
+// const GITHUB_RAW_URL = "https://github.com/hkust-vgd/splat-viewer/raw/refs/heads/master/pier_new.splat";
+// const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
 async function main() {
-    let carousel = true;
+    let carousel = false;
     const params = new URLSearchParams(location.search);
     try {
         viewMatrix = JSON.parse(decodeURIComponent(location.hash.slice(1)));
         carousel = false;
     } catch (err) {}
+    // here since we use LFS we need to provide the actual url of the splat file (or it will just be a pointer file)
     const url = new URL(
         // "nike.splat",
+        // "http://localhost:8081/output.splat"
         // location.href,
         params.get("url") || "pier_part.splat",
         "https://statics.hkustvgd.com/",
     );
     const req = await fetch(url, {
-        mode: "cors", // no-cors, *cors, same-origin
+        mode: "no-cors", // no-cors, *cors, same-origin
         credentials: "omit", // include, *same-origin, omit
     });
     console.log(req);
@@ -869,16 +880,14 @@ async function main() {
     worker.onmessage = (e) => {
         if (e.data.buffer) {
             splatData = new Uint8Array(e.data.buffer);
-            if (e.data.save) {
-                const blob = new Blob([splatData.buffer], {
-                    type: "application/octet-stream",
-                });
-                const link = document.createElement("a");
-                link.download = "model.splat";
-                link.href = URL.createObjectURL(blob);
-                document.body.appendChild(link);
-                link.click();
-            }
+            const blob = new Blob([splatData.buffer], {
+                type: "application/octet-stream",
+            });
+            const link = document.createElement("a");
+            link.download = "model.splat";
+            link.href = URL.createObjectURL(blob);
+            document.body.appendChild(link);
+            link.click();
         } else if (e.data.texdata) {
             const { texdata, texwidth, texheight } = e.data;
             // console.log(texdata)
@@ -919,22 +928,23 @@ async function main() {
 
     let activeKeys = [];
     let currentCameraIndex = 0;
+    camera = cameras[currentCameraIndex];
+    viewMatrix = getViewMatrix(camera);
 
     window.addEventListener("keydown", (e) => {
         // if (document.activeElement != document.body) return;
         carousel = false;
         if (!activeKeys.includes(e.code)) activeKeys.push(e.code);
         if (/\d/.test(e.key)) {
-            currentCameraIndex = parseInt(e.key);
+            currentCameraIndex = parseInt(e.key)
             camera = cameras[currentCameraIndex];
             viewMatrix = getViewMatrix(camera);
         }
-        if (["-", "_"].includes(e.key)) {
-            currentCameraIndex =
-                (currentCameraIndex + cameras.length - 1) % cameras.length;
+        if (['-', '_'].includes(e.key)){
+            currentCameraIndex = (currentCameraIndex + cameras.length - 1) % cameras.length;
             viewMatrix = getViewMatrix(cameras[currentCameraIndex]);
         }
-        if (["+", "="].includes(e.key)) {
+        if (['+', '='].includes(e.key)){
             currentCameraIndex = (currentCameraIndex + 1) % cameras.length;
             viewMatrix = getViewMatrix(cameras[currentCameraIndex]);
         }
@@ -945,10 +955,10 @@ async function main() {
                 JSON.stringify(
                     viewMatrix.map((k) => Math.round(k * 100) / 100),
                 );
-            camid.innerText = "";
+            camid.innerText =""
         } else if (e.code === "KeyP") {
             carousel = true;
-            camid.innerText = "";
+            camid.innerText =""
         }
     });
     window.addEventListener("keyup", (e) => {
@@ -968,8 +978,8 @@ async function main() {
                 e.deltaMode == 1
                     ? lineHeight
                     : e.deltaMode == 2
-                      ? innerHeight
-                      : 1;
+                        ? innerHeight
+                        : 1;
             let inv = invert4(viewMatrix);
             if (e.shiftKey) {
                 inv = translate4(
@@ -1181,10 +1191,7 @@ async function main() {
 
     const frame = (now) => {
         let inv = invert4(viewMatrix);
-        let shiftKey =
-            activeKeys.includes("Shift") ||
-            activeKeys.includes("ShiftLeft") ||
-            activeKeys.includes("ShiftRight");
+        let shiftKey = activeKeys.includes("Shift") || activeKeys.includes("ShiftLeft") || activeKeys.includes("ShiftRight")
 
         if (activeKeys.includes("ArrowUp")) {
             if (shiftKey) {
@@ -1231,27 +1238,13 @@ async function main() {
                 inv = translate4(inv, 0, 0, -moveSpeed * gamepad.axes[1]);
                 carousel = false;
             }
-            if (gamepad.buttons[12].pressed || gamepad.buttons[13].pressed) {
-                inv = translate4(
-                    inv,
-                    0,
-                    -moveSpeed *
-                        (gamepad.buttons[12].pressed -
-                            gamepad.buttons[13].pressed),
-                    0,
-                );
+            if(gamepad.buttons[12].pressed || gamepad.buttons[13].pressed){
+                inv = translate4(inv, 0, -moveSpeed*(gamepad.buttons[12].pressed - gamepad.buttons[13].pressed), 0);
                 carousel = false;
             }
 
-            if (gamepad.buttons[14].pressed || gamepad.buttons[15].pressed) {
-                inv = translate4(
-                    inv,
-                    -moveSpeed *
-                        (gamepad.buttons[14].pressed -
-                            gamepad.buttons[15].pressed),
-                    0,
-                    0,
-                );
+            if(gamepad.buttons[14].pressed || gamepad.buttons[15].pressed){
+                inv = translate4(inv, -moveSpeed*(gamepad.buttons[14].pressed - gamepad.buttons[15].pressed), 0, 0);
                 carousel = false;
             }
 
@@ -1271,17 +1264,12 @@ async function main() {
                 carousel = false;
             }
             if (gamepad.buttons[4].pressed && !leftGamepadTrigger) {
-                camera =
-                    cameras[(cameras.indexOf(camera) + 1) % cameras.length];
+                camera = cameras[(cameras.indexOf(camera)+1)%cameras.length]
                 inv = invert4(getViewMatrix(camera));
                 carousel = false;
             }
             if (gamepad.buttons[5].pressed && !rightGamepadTrigger) {
-                camera =
-                    cameras[
-                        (cameras.indexOf(camera) + cameras.length - 1) %
-                            cameras.length
-                    ];
+                camera = cameras[(cameras.indexOf(camera)+cameras.length-1)%cameras.length]
                 inv = invert4(getViewMatrix(camera));
                 carousel = false;
             }
@@ -1291,7 +1279,7 @@ async function main() {
                 isJumping = true;
                 carousel = false;
             }
-            if (gamepad.buttons[3].pressed) {
+            if(gamepad.buttons[3].pressed){
                 carousel = true;
             }
         }
@@ -1306,8 +1294,8 @@ async function main() {
                 activeKeys.includes("KeyJ")
                     ? -0.05
                     : activeKeys.includes("KeyL")
-                      ? 0.05
-                      : 0,
+                        ? 0.05
+                        : 0,
                 0,
                 1,
                 0,
@@ -1317,8 +1305,8 @@ async function main() {
                 activeKeys.includes("KeyI")
                     ? 0.05
                     : activeKeys.includes("KeyK")
-                      ? -0.05
-                      : 0,
+                        ? -0.05
+                        : 0,
                 1,
                 0,
                 0,
@@ -1372,7 +1360,7 @@ async function main() {
             document.getElementById("progress").style.display = "none";
         }
         fps.innerText = Math.round(avgFps) + " fps";
-        if (isNaN(currentCameraIndex)) {
+        if (isNaN(currentCameraIndex)){
             camid.innerText = "";
         }
         lastFrame = now;
@@ -1380,12 +1368,6 @@ async function main() {
     };
 
     frame();
-
-    const isPly = (splatData) =>
-        splatData[0] == 112 &&
-        splatData[1] == 108 &&
-        splatData[2] == 121 &&
-        splatData[3] == 10;
 
     const selectFile = (file) => {
         const fr = new FileReader();
@@ -1410,9 +1392,14 @@ async function main() {
                 splatData = new Uint8Array(fr.result);
                 console.log("Loaded", Math.floor(splatData.length / rowLength));
 
-                if (isPly(splatData)) {
+                if (
+                    splatData[0] == 112 &&
+                    splatData[1] == 108 &&
+                    splatData[2] == 121 &&
+                    splatData[3] == 10
+                ) {
                     // ply file magic header means it should be handled differently
-                    worker.postMessage({ ply: splatData.buffer, save: true });
+                    worker.postMessage({ ply: splatData.buffer });
                 } else {
                     worker.postMessage({
                         buffer: splatData.buffer,
@@ -1456,26 +1443,18 @@ async function main() {
         bytesRead += value.length;
 
         if (vertexCount > lastVertexCount) {
-            if (!isPly(splatData)) {
-                worker.postMessage({
-                    buffer: splatData.buffer,
-                    vertexCount: Math.floor(bytesRead / rowLength),
-                });
-            }
-            lastVertexCount = vertexCount;
-        }
-    }
-    if (!stopLoading) {
-        if (isPly(splatData)) {
-            // ply file magic header means it should be handled differently
-            worker.postMessage({ ply: splatData.buffer, save: false });
-        } else {
             worker.postMessage({
                 buffer: splatData.buffer,
                 vertexCount: Math.floor(bytesRead / rowLength),
             });
+            lastVertexCount = vertexCount;
         }
     }
+    if (!stopLoading)
+        worker.postMessage({
+            buffer: splatData.buffer,
+            vertexCount: Math.floor(bytesRead / rowLength),
+        });
 }
 
 main().catch((err) => {
