@@ -118,9 +118,9 @@ let cameras = [
         height: 1090,
         position: [4.742994605467533, -0.05591660945412069, 0.9500365976084458],
         rotation: [
-            [-0.17042655709210375, 0.01207080756938, -0.9852964448542146],
-            [0.1165090336695526, 0.9931575292530063, -0.00798543433078162],
-            [0.9784581921120181, -0.1161568667478904, -0.1706667764862097],
+            [0.01207080756938, 0.17042655709210375, -0.9852964448542146],
+            [0.9931575292530063, -0.1165090336695526, -0.00798543433078162],
+            [-0.1161568667478904, -0.9784581921120181, -0.1706667764862097]
         ],
         fy: 1164.6601287484507,
         fx: 1159.5880733038064,
@@ -747,7 +747,7 @@ async function main() {
         // "nike.splat",
         // location.href,
         params.get("url") || "pier_part.splat",
-        "https://statics.hkustvgd.com/",
+        "http://statics.hkustvgd.com/",
     );
     const req = await fetch(url, {
         mode: "cors", // no-cors, *cors, same-origin
@@ -918,7 +918,9 @@ async function main() {
     };
 
     let activeKeys = [];
-    let currentCameraIndex = 0;
+    let currentCameraIndex = 7;
+    camera = cameras[currentCameraIndex];
+    viewMatrix = getViewMatrix(camera);
 
     window.addEventListener("keydown", (e) => {
         // if (document.activeElement != document.body) return;
