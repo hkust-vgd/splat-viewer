@@ -754,7 +754,7 @@ async function main() {
         "https://splat-viewer.hkustvgd.com/",
     );
     const req = await fetch(url, {
-        mode: "cors", // no-cors, *cors, same-origin
+        mode: "no-cors", // no-cors, *cors, same-origin
         credentials: "omit", // include, *same-origin, omit
     });
     console.log(req);
