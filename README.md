@@ -12,42 +12,33 @@ https://github.com/antimatter15/splat/assets/30054/878d5d34-e0a7-4336-85df-111ff
 
 ## controls
 
-movement (arrow keys)
+Computer Control
+- W/S/A/D to translate the camera position
+- Q/E to roll the camera anti-clockwise / clockwise
+- C/F to zoom in/out (closer/farther)
+- Mouse to rotate the camera orientation
+- Wheel also to zoom in/out
+- Arrow keys also to rotate the camera orientation
 
-- left/right arrow keys to strafe side to side
-- up/down arrow keys to move forward/back
-- `space` to jump
-
-camera angle (wasd)
-
-- `a`/`d` to turn camera left/right
-- `w`/`s` to tilt camera up/down
-- `q`/`e` to roll camera counterclockwise/clockwise
-- `i`/`k` and `j`/`l` to orbit
-
-trackpad
-- scroll up/down to orbit down
-- scroll left/right to orbit left/right
+Trackpad Control
+- scroll up/down/left/right to orbit
 - pinch to move forward/back
-- ctrl key + scroll up/down to move forward/back
-- shift + scroll up/down to move up/down
-- shift + scroll left/right to strafe side to side
+- ctrl key + scroll to move forward/back
+- shift + scroll to move up/down or strafe
 
-mouse
-- click and drag to orbit
-- right click (or ctrl/cmd key) and drag up/down to move forward/back
-- right click (or ctrl/cmd key) and drag left/right to strafe side to side
-
-touch (mobile)
+Touch (Mobile) Control
 - one finger to orbit
 - two finger pinch to move forward/back
 - two finger rotate to rotate camera clockwise/counterclockwise
 - two finger pan to move side-to-side and up-down
 
-other
+Gamepad Control
+- if you have a game controller connected it should work
+
+Other Controls
 - press 0-9 to switch to one of the pre-loaded camera views
 - press '-' or '+'key to cycle loaded cameras
-- press `p` to resume default animation
+- press p to resume default animation
 - drag and drop .ply file to convert to .splat
 - drag and drop cameras.json to load cameras
 
