@@ -731,13 +731,16 @@ void main () {
 
 `.trim();
 
+// the default orientation of this webgl is forward:z  up:y  left:x
 let defaultViewMatrix = [
-    0.47, 0.04, 0.88, 0, -0.11, 0.99, 0.02, 0, -0.88, -0.11, 0.47, 0, 0.07,
-    0.03, 6.55, 1,
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1
 ];
 let viewMatrix = defaultViewMatrix;
 async function main() {
-    let carousel = true;
+    let carousel = false;
     const params = new URLSearchParams(location.search);
     try {
         viewMatrix = JSON.parse(decodeURIComponent(location.hash.slice(1)));
@@ -746,7 +749,7 @@ async function main() {
     const url = new URL(
         // "nike.splat",
         // location.href,
-        params.get("url") || "pier_part.splat",
+        params.get("url") || "pier_y_up_x_left.splat",
         "https://statics.hkustvgd.com/",
     );
     const req = await fetch(url, {
@@ -918,9 +921,9 @@ async function main() {
     };
 
     let activeKeys = [];
-    let currentCameraIndex = 7;
-    camera = cameras[currentCameraIndex];
-    viewMatrix = getViewMatrix(camera);
+    let currentCameraIndex = 0;
+    // camera = cameras[currentCameraIndex];
+    // viewMatrix = getViewMatrix(camera);
 
     window.addEventListener("keydown", (e) => {
         // if (document.activeElement != document.body) return;
@@ -1334,8 +1337,8 @@ async function main() {
             let inv = invert4(defaultViewMatrix);
 
             const t = Math.sin((Date.now() - start) / 5000);
-            inv = translate4(inv, 2.5 * t, 0, 6 * (1 - Math.cos(t)));
-            inv = rotate4(inv, -0.6 * t, 0, 1, 0);
+            inv = translate4(inv, 1.5 * t, 0, 3 * (1 - Math.cos(t)));
+            inv = rotate4(inv, -0.2 * t, 0, 1, 0);
 
             viewMatrix = invert4(inv);
         }
