@@ -1,16 +1,14 @@
 let cameras = [
     {
         id: 0,
-        img_name: "00001",
+        img_name: "00057",
         width: 1959,
         height: 1090,
-        position: [
-            -3.0089893469241797, -0.11086489695181866, -3.7527640949141428,
-        ],
+        position: [4.742994605467533, -0.05591660945412069, 0.9500365976084458],
         rotation: [
-            [0.876134201218856, 0.06925962026449776, 0.47706599800804744],
-            [-0.04747421839895102, 0.9972110940209488, -0.057586739349882114],
-            [-0.4797239414934443, 0.027805376500959853, 0.8769787916452908],
+            [0.01207080756938, 0.17042655709210375, -0.9852964448542146],
+            [0.9931575292530063, -0.1165090336695526, -0.00798543433078162],
+            [-0.1161568667478904, -0.9784581921120181, -0.1706667764862097]
         ],
         fy: 1164.6601287484507,
         fx: 1159.5880733038064,
@@ -113,14 +111,16 @@ let cameras = [
     },
     {
         id: 7,
-        img_name: "00057",
+        img_name: "00001",
         width: 1959,
         height: 1090,
-        position: [4.742994605467533, -0.05591660945412069, 0.9500365976084458],
+        position: [
+            -3.0089893469241797, -0.11086489695181866, -3.7527640949141428,
+        ],
         rotation: [
-            [-0.17042655709210375, 0.01207080756938, -0.9852964448542146],
-            [0.1165090336695526, 0.9931575292530063, -0.00798543433078162],
-            [0.9784581921120181, -0.1161568667478904, -0.1706667764862097],
+            [0.876134201218856, 0.06925962026449776, 0.47706599800804744],
+            [-0.04747421839895102, 0.9972110940209488, -0.057586739349882114],
+            [-0.4797239414934443, 0.027805376500959853, 0.8769787916452908],
         ],
         fy: 1164.6601287484507,
         fx: 1159.5880733038064,
@@ -440,8 +440,8 @@ function createWorker(self) {
         for (let i = 0; i < vertexCount; i++) {
             let depth =
                 ((viewProj[2] * f_buffer[8 * i + 0] +
-                    viewProj[6] * f_buffer[8 * i + 1] +
-                    viewProj[10] * f_buffer[8 * i + 2]) *
+                        viewProj[6] * f_buffer[8 * i + 1] +
+                        viewProj[10] * f_buffer[8 * i + 2]) *
                     4096) |
                 0;
             sizeList[i] = depth;
@@ -570,9 +570,9 @@ function createWorker(self) {
             if (types["scale_0"]) {
                 const qlen = Math.sqrt(
                     attrs.rot_0 ** 2 +
-                        attrs.rot_1 ** 2 +
-                        attrs.rot_2 ** 2 +
-                        attrs.rot_3 ** 2,
+                    attrs.rot_1 ** 2 +
+                    attrs.rot_2 ** 2 +
+                    attrs.rot_3 ** 2,
                 );
 
                 rot[0] = (attrs.rot_0 / qlen) * 128 + 128;
@@ -735,12 +735,18 @@ let defaultViewMatrix = [
     0.47, 0.04, 0.88, 0, -0.11, 0.99, 0.02, 0, -0.88, -0.11, 0.47, 0, 0.07,
     0.03, 6.55, 1,
 ];
+// let defaultViewMatrix = [
+//     0.01207080756938,      0.17042655709210375,   -0.9852964448542146,   4.742994605467533,
+//     0.9931575292530063,    -0.1165090336695526,    -0.00798543433078162, -0.05591660945412069,
+//     -0.1161568667478904,    -0.9784581921120181,    -0.1706667764862097,  0.9500365976084458,
+//     0.0,                    0.0,                    0.0,                   1.0
+// ]
 let viewMatrix = defaultViewMatrix;
 
 // const GITHUB_RAW_URL = "https://github.com/hkust-vgd/splat-viewer/raw/refs/heads/master/pier_new.splat";
 // const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
 async function main() {
-    let carousel = true;
+    let carousel = false;
     const params = new URLSearchParams(location.search);
     try {
         viewMatrix = JSON.parse(decodeURIComponent(location.hash.slice(1)));
@@ -749,9 +755,10 @@ async function main() {
     // here since we use LFS we need to provide the actual url of the splat file (or it will just be a pointer file)
     const url = new URL(
         // "nike.splat",
+        // "http://localhost:8081/output.splat"
         // location.href,
-        params.get("url") || "pier_new.splat",
-        "https://splat-viewer.hkustvgd.com/",
+        params.get("url") || "pier_part.splat",
+        "https://statics.hkustvgd.com/",
     );
     const req = await fetch(url, {
         mode: "no-cors", // no-cors, *cors, same-origin
@@ -920,7 +927,9 @@ async function main() {
     };
 
     let activeKeys = [];
-	let currentCameraIndex = 0;
+    let currentCameraIndex = 0;
+    camera = cameras[currentCameraIndex];
+    viewMatrix = getViewMatrix(camera);
 
     window.addEventListener("keydown", (e) => {
         // if (document.activeElement != document.body) return;
@@ -931,14 +940,14 @@ async function main() {
             camera = cameras[currentCameraIndex];
             viewMatrix = getViewMatrix(camera);
         }
-		if (['-', '_'].includes(e.key)){
-			currentCameraIndex = (currentCameraIndex + cameras.length - 1) % cameras.length;
-			viewMatrix = getViewMatrix(cameras[currentCameraIndex]);
-		}
-		if (['+', '='].includes(e.key)){
-			currentCameraIndex = (currentCameraIndex + 1) % cameras.length;
-			viewMatrix = getViewMatrix(cameras[currentCameraIndex]);
-		}
+        if (['-', '_'].includes(e.key)){
+            currentCameraIndex = (currentCameraIndex + cameras.length - 1) % cameras.length;
+            viewMatrix = getViewMatrix(cameras[currentCameraIndex]);
+        }
+        if (['+', '='].includes(e.key)){
+            currentCameraIndex = (currentCameraIndex + 1) % cameras.length;
+            viewMatrix = getViewMatrix(cameras[currentCameraIndex]);
+        }
         camid.innerText = "cam  " + currentCameraIndex;
         if (e.code == "KeyV") {
             location.hash =
@@ -946,7 +955,7 @@ async function main() {
                 JSON.stringify(
                     viewMatrix.map((k) => Math.round(k * 100) / 100),
                 );
-                camid.innerText =""
+            camid.innerText =""
         } else if (e.code === "KeyP") {
             carousel = true;
             camid.innerText =""
@@ -969,8 +978,8 @@ async function main() {
                 e.deltaMode == 1
                     ? lineHeight
                     : e.deltaMode == 2
-                    ? innerHeight
-                    : 1;
+                        ? innerHeight
+                        : 1;
             let inv = invert4(viewMatrix);
             if (e.shiftKey) {
                 inv = translate4(
@@ -1285,8 +1294,8 @@ async function main() {
                 activeKeys.includes("KeyJ")
                     ? -0.05
                     : activeKeys.includes("KeyL")
-                    ? 0.05
-                    : 0,
+                        ? 0.05
+                        : 0,
                 0,
                 1,
                 0,
@@ -1296,8 +1305,8 @@ async function main() {
                 activeKeys.includes("KeyI")
                     ? 0.05
                     : activeKeys.includes("KeyK")
-                    ? -0.05
-                    : 0,
+                        ? -0.05
+                        : 0,
                 1,
                 0,
                 0,
