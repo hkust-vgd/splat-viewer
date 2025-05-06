@@ -746,11 +746,20 @@ async function main() {
         viewMatrix = JSON.parse(decodeURIComponent(location.hash.slice(1)));
         carousel = false;
     } catch (err) {}
+    let splatName = window.location.pathname.substring(1); // Remove leading slash
+    // Remove any existing .splat extension if present
+    splatName = splatName.replace(/\.splat$/, '');
+    console.log("splat name: ", splatPath)
+    if (!splatName || splatName === 'index.html') {
+        splatName = params.get("url") || "pier";
+    }
+    // if (!splatPath.endsWith('.splat')) {
+    //     // Default fallback or handle other cases
+    //     splatPath = params.get("url") || "pier.splat";
+    // }
     const url = new URL(
-        // "nike.splat",
-        // location.href,
-        params.get("url") || "pier_y_up_x_left.splat",
-        "https://statics.hkustvgd.com/",
+        `${splatName}.splat`,
+        "https://statics.hkustvgd.com/"
     );
     const req = await fetch(url, {
         mode: "cors", // no-cors, *cors, same-origin
