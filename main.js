@@ -1054,22 +1054,22 @@ async function main() {
             startX = e.clientX;
             startY = e.clientY;
         }
-        // else if (down == 2) {
-        //     let inv = invert4(viewMatrix);
-        //     // inv = rotateY(inv, );
-        //     // let preY = inv[13];
-        //     inv = translate4(
-        //         inv,
-        //         (-10 * (e.clientX - startX)) / innerWidth,
-        //         0,
-        //         (10 * (e.clientY - startY)) / innerHeight,
-        //     );
-        //     // inv[13] = preY;
-        //     viewMatrix = invert4(inv);
-        //
-        //     startX = e.clientX;
-        //     startY = e.clientY;
-        // }
+        else if (down == 2) {
+            let inv = invert4(viewMatrix);
+            // inv = rotateY(inv, );
+            // let preY = inv[13];
+            inv = translate4(
+                inv,
+                (-10 * (e.clientX - startX)) / innerWidth,
+                0,
+                (10 * (e.clientY - startY)) / innerHeight,
+            );
+            // inv[13] = preY;
+            viewMatrix = invert4(inv);
+
+            startX = e.clientX;
+            startY = e.clientY;
+        }
     });
     canvas.addEventListener("mouseup", (e) => {
         e.preventDefault();
