@@ -1053,8 +1053,8 @@ async function main() {
             let inv = invert4(viewMatrix);
             inv = translate4(
                 inv,
-                (-25 * (e.clientX - startX)) / innerWidth,
-                (25 * (e.clientY - startY)) / innerHeight,
+                (-40 * (e.clientX - startX)) / innerWidth,
+                (-40 * (e.clientY - startY)) / innerHeight,
                 0,
             );
             viewMatrix = invert4(inv);
