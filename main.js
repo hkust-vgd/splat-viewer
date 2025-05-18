@@ -1024,14 +1024,12 @@ async function main() {
         e.preventDefault();
         startX = e.clientX;
         startY = e.clientY;
-        down = e.ctrlKey || e.metaKey ? 2 : 1;
+        // Set down to 1 for left click, 2 for right click
+        down = e.button === 0 ? 1 : e.button === 2 ? 2 : 0;
     });
     canvas.addEventListener("contextmenu", (e) => {
         carousel = false;
         e.preventDefault();
-        startX = e.clientX;
-        startY = e.clientY;
-        down = 2;
     });
 
     canvas.addEventListener("mousemove", (e) => {
@@ -1046,9 +1044,6 @@ async function main() {
             inv = rotate4(inv, dx, 0, 1, 0);
             inv = rotate4(inv, -dy, 1, 0, 0);
             inv = translate4(inv, 0, 0, -d);
-            // let postAngle = Math.atan2(inv[0], inv[10])
-            // inv = rotate4(inv, postAngle - preAngle, 0, 0, 1)
-            // console.log(postAngle)
             viewMatrix = invert4(inv);
 
             startX = e.clientX;
@@ -1056,15 +1051,12 @@ async function main() {
         }
         else if (down == 2) {
             let inv = invert4(viewMatrix);
-            // inv = rotateY(inv, );
-            // let preY = inv[13];
             inv = translate4(
                 inv,
-                (-10 * (e.clientX - startX)) / innerWidth,
+                (-25 * (e.clientX - startX)) / innerWidth,
+                (25 * (e.clientY - startY)) / innerHeight,
                 0,
-                (10 * (e.clientY - startY)) / innerHeight,
             );
-            // inv[13] = preY;
             viewMatrix = invert4(inv);
 
             startX = e.clientX;
